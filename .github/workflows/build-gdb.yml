@@ -34,7 +34,7 @@ jobs:
 
       - name: build GDB
         id: build
-        run: ./build-gdb.sh 64
+        run: sudo bash ./build-gdb.sh
         
       - name: release
         id: release
