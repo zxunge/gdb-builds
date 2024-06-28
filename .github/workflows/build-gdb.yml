@@ -1,0 +1,59 @@
+name: build-gdb
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v2          
+
+      - name: install dependencies
+        run: |
+          sudo apt-get install --no-install-recommends -y \
+            ca-certificates \
+            libgmp-dev      \
+            libmpc-dev      \
+            libmpfr-dev     \
+            libisl-dev      \
+            xz-utils        \
+            texinfo         \
+            patch           \
+            p7zip           \
+            cmake           \
+            make            \
+            curl            \
+            m4              \
+            gcc             \
+            g++
+
+      - name: build GDB
+        id: build
+        run: ./build-gdb.sh 64
+        
+      - name: release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.build.outputs.RELEASE_NAME }}
+          release_name: ${{ steps.build.outputs.RELEASE_NAME }}
+          body: |
+            GDB v${{ steps.build64.outputs.GDB_VERSION }}
+
+      - name: upload GDB
+        id: upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: ./${{ steps.build.outputs.OUTPUT_BINARY }}
+          asset_name: ${{ steps.build.outputs.OUTPUT_BINARY }}
+          asset_content_type: application/x-7z-compressed
