@@ -146,6 +146,11 @@ make -j$(nproc)
 make install
 popd
 
+pushd ${BUILD}/x-gcc
+make -j$(nproc)
+make install
+popd
+
 mkdir -p ${BUILD}/zstd && pushd ${BUILD}/zstd
 cmake ${SOURCE}/zstd-${ZSTD_VERSION}/build/cmake \
   -DCMAKE_BUILD_TYPE=Release                     \
