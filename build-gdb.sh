@@ -229,6 +229,7 @@ mkdir -p ${BUILD}/python && pushd ${BUILD}/python
 ${SOURCE}/Python-${PYTHON_VERSION}/configure  \
   --prefix=${FINAL}                    \
   --host=${TARGET}                     \
+  --build=x86_64-pc-linux-gnu          \
   --enable-optimizations               \
   --with-lto                           
 make -j$(nproc)
